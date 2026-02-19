@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Speech Translator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+                <h1>Live Speech Translator</h1>
+            </div>
+            <p class="subtitle">Real-time voice translation across 22+ Indian languages</p>
+        </header>
+
+        <div class="card controls-card">
+            <div class="controls">
+                <div class="language-select">
+                    <label for="source-lang">Speaking in</label>
+                    <select id="source-lang"></select>
+                </div>
+                <button class="swap-btn" id="swap-languages" title="Swap languages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <polyline points="7 23 3 19 7 15"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                </button>
+                <div class="language-select">
+                    <label for="target-lang">Translate to</label>
+                    <select id="target-lang"></select>
+                </div>
+            </div>
+            <div class="controls-hint">Languages with <span class="hint-icon">🔊</span> support voice output</div>
+        </div>
+
+        <div class="mic-section">
+            <button id="mic-btn" class="mic-button" disabled>
+                <svg class="mic-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+                <span class="mic-label">Start</span>
+            </button>
+            <div id="status" class="status">Initializing...</div>
+        </div>
+
+        <div class="card voice-card">
+            <div class="voice-card-row">
+                <div class="voice-card-left">
+                    <svg class="voice-card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                    </svg>
+                    <div class="voice-card-text">
+                        <span class="voice-card-title">Speak Translation</span>
+                        <span class="voice-card-desc">Read translated text aloud</span>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="tts-toggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="voice-picker" id="voice-select-wrap">
+                <label for="voice-select">Choose a voice</label>
+                <select id="voice-select"></select>
+            </div>
+        </div>
+
+        <div class="output-area">
+            <div class="card output-box">
+                <div class="output-header">
+                    <div class="output-dot dot-source"></div>
+                    <h3>Heard <span id="heard-lang"></span></h3>
+                </div>
+                <div id="transcript" class="text-output"></div>
+            </div>
+            <div class="card output-box">
+                <div class="output-header">
+                    <div class="output-dot dot-target"></div>
+                    <h3>Translation <span id="translated-lang"></span></h3>
+                </div>
+                <div id="translation" class="text-output"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span>Powered by</span>
+            <a href="https://www.sarvam.ai" target="_blank" rel="noopener noreferrer">Sarvam AI</a>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

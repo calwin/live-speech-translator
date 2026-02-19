@@ -1,0 +1,510 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: linear-gradient(135deg, #0f0c29 0%, #1a1a3e 40%, #24243e 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 1.5rem;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    color: #7c5cfc;
+}
+
+h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: #8888a8;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+/* Card */
+.card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+}
+
+/* Controls */
+.controls-card {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.controls {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.language-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 140px;
+    max-width: 260px;
+}
+
+.language-select label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #8888a8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.language-select select {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.07);
+    color: #e0e0e0;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238888a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.language-select select:focus {
+    outline: none;
+    border-color: #7c5cfc;
+    background: rgba(124, 92, 252, 0.08);
+}
+
+.language-select select option {
+    background: #1a1a3e;
+    color: #e0e0e0;
+}
+
+.swap-btn {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.55rem 0.65rem;
+    color: #8888a8;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.swap-btn:hover {
+    background: rgba(124, 92, 252, 0.15);
+    border-color: #7c5cfc;
+    color: #7c5cfc;
+}
+
+.controls-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #6b6b88;
+    margin-top: 0.75rem;
+}
+
+.controls-hint .hint-icon {
+    font-size: 0.65rem;
+}
+
+/* Mic Section */
+.mic-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.75rem;
+}
+
+.mic-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 3px solid rgba(124, 92, 252, 0.3);
+    background: linear-gradient(135deg, #7c5cfc 0%, #6c4de6 100%);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    gap: 0.2rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 20px rgba(124, 92, 252, 0.25);
+}
+
+.mic-button:disabled {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    cursor: not-allowed;
+    color: #555;
+}
+
+.mic-button:not(:disabled):hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 28px rgba(124, 92, 252, 0.35);
+}
+
+.mic-button:not(:disabled):active {
+    transform: scale(0.97);
+}
+
+.mic-svg {
+    width: 26px;
+    height: 26px;
+}
+
+.mic-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mic-button.recording {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    border-color: rgba(231, 76, 60, 0.4);
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3); }
+    50% { box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3), 0 0 0 16px rgba(231, 76, 60, 0.08); }
+}
+
+.mic-button.recording.speaking {
+    background: linear-gradient(135deg, #ff6b6b 0%, #e74c3c 100%);
+    animation: pulse-fast 0.7s ease-in-out infinite;
+}
+
+@keyframes pulse-fast {
+    0%, 100% { box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4); }
+    50% { box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4), 0 0 0 14px rgba(231, 76, 60, 0.12); }
+}
+
+.status {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #8888a8;
+    font-weight: 500;
+    min-height: 1.2em;
+}
+
+/* Voice Settings Card */
+.voice-card {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.voice-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.voice-card-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.voice-card-icon {
+    color: #7c5cfc;
+    flex-shrink: 0;
+}
+
+.voice-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.voice-card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.voice-card-desc {
+    font-size: 0.75rem;
+    color: #6b6b88;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    transition: background 0.25s;
+}
+
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #888;
+    border-radius: 50%;
+    transition: transform 0.25s, background 0.25s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(124, 92, 252, 0.35);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+    background: #7c5cfc;
+}
+
+/* Voice Picker */
+.voice-picker {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: opacity 0.25s, max-height 0.25s;
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.voice-picker.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-top-color: transparent;
+}
+
+.voice-picker label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8888a8;
+    white-space: nowrap;
+}
+
+.voice-picker select {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.07);
+    color: #e0e0e0;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238888a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+    transition: border-color 0.2s;
+    text-transform: capitalize;
+}
+
+.voice-picker select:focus {
+    outline: none;
+    border-color: #7c5cfc;
+}
+
+.voice-picker select option {
+    background: #1a1a3e;
+    color: #e0e0e0;
+    text-transform: capitalize;
+}
+
+/* Output Area */
+.output-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.output-box {
+    padding: 1.25rem;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.output-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.output-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dot-source {
+    background: #7c5cfc;
+}
+
+.dot-target {
+    background: #22c55e;
+}
+
+.output-box h3 {
+    font-size: 0.72rem;
+    color: #8888a8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.output-box h3 span {
+    font-weight: 400;
+    color: #6b6b88;
+}
+
+.text-output {
+    font-size: 1rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #d0d0e0;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.text-output::-webkit-scrollbar {
+    width: 4px;
+}
+
+.text-output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.text-output::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.8rem;
+    color: #5a5a78;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.footer a {
+    color: #7c5cfc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.footer a:hover {
+    color: #9b82fc;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.5rem 1rem 1rem;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    .output-area {
+        grid-template-columns: 1fr;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .language-select {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .swap-btn svg {
+        transform: rotate(90deg);
+    }
+
+    .voice-picker {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+}
