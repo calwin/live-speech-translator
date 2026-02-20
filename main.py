@@ -325,6 +325,20 @@ def generate_vtt(cues: list) -> str:
     return "\n".join(lines)
 
 
+def vtt_to_srt(vtt: str) -> str:
+    """Convert WebVTT to SRT format for ffmpeg mov_text compatibility."""
+    lines = vtt.strip().split("\n")
+    srt_lines = []
+    for line in lines:
+        if line.strip() == "WEBVTT":
+            continue
+        # Replace VTT timestamp dots with SRT commas: 00:00:01.500 -> 00:00:01,500
+        if " --> " in line:
+            line = line.replace(".", ",")
+        srt_lines.append(line)
+    return "\n".join(srt_lines)
+
+
 def cleanup_job(job_id: str):
     """Remove temp files for a completed job."""
     job_dir = TEMP_DIR / job_id
@@ -348,7 +362,7 @@ async def download_subtitled_video(job_id: str):
         raise HTTPException(404, "Video file not found")
 
     async def cleanup_after():
-        await asyncio.sleep(5)
+        await asyncio.sleep(60)
         cleanup_job(job_id)
 
     asyncio.create_task(cleanup_after())
@@ -486,19 +500,21 @@ async def websocket_subtitles(ws: WebSocket, job_id: str):
         await ws.send_json({"type": "progress", "percent": 85, "message": "Generating subtitles..."})
         vtt_content = generate_vtt(cues)
 
-        # Phase 6: Burn subtitles into video
-        await ws.send_json({"type": "progress", "percent": 90, "message": "Burning subtitles into video..."})
+        # Phase 6: Embed subtitles as soft subtitle track in video
+        await ws.send_json({"type": "progress", "percent": 90, "message": "Embedding subtitles into video..."})
         video_path = str(Path(job_dir) / "input_video")
-        vtt_path = str(Path(job_dir) / "subs.vtt")
+        srt_path = str(Path(job_dir) / "subs.srt")
+        srt_content = vtt_to_srt(vtt_content)
+        with open(srt_path, "w") as f:
+            f.write(srt_content)
         output_path = str(Path(job_dir) / "output_video.mp4")
-        with open(vtt_path, "w") as f:
-            f.write(vtt_content)
 
         burn_result = subprocess.run(
             [
-                "ffmpeg", "-i", video_path,
-                "-vf", f"subtitles={vtt_path}",
-                "-c:a", "copy",
+                "ffmpeg", "-i", video_path, "-i", srt_path,
+                "-c:v", "copy", "-c:a", "copy",
+                "-c:s", "mov_text",
+                "-metadata:s:s:0", f"language={target_lang.split('-')[0]}",
                 "-y", output_path,
             ],
             capture_output=True, text=True, timeout=600,
