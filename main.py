@@ -450,6 +450,12 @@ async def websocket_subtitles(ws: WebSocket, job_id: str):
             await ws.send_json({"type": "error", "message": "No speech detected in the video"})
             return
 
+        # If auto-detect was used, get the detected language from STT result
+        if source_lang == "unknown":
+            detected = result_data.get("language_code")
+            if detected:
+                source_lang = detected
+
         # Phase 4: Translate
         await ws.send_json({
             "type": "progress", "percent": 75,
