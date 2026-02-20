@@ -338,6 +338,23 @@ async def subtitles_page():
     return FileResponse("static/subtitles.html")
 
 
+@app.get("/api/subtitles/download/{job_id}")
+async def download_subtitled_video(job_id: str):
+    job_info = active_jobs.get(job_id)
+    if not job_info or not job_info.get("output_video"):
+        raise HTTPException(404, "Video not found or not ready")
+    output_path = job_info["output_video"]
+    if not Path(output_path).exists():
+        raise HTTPException(404, "Video file not found")
+
+    async def cleanup_after():
+        await asyncio.sleep(5)
+        cleanup_job(job_id)
+
+    asyncio.create_task(cleanup_after())
+    return FileResponse(output_path, media_type="video/mp4", filename="translated_video.mp4")
+
+
 @app.post("/api/subtitles/upload")
 async def upload_video(
     file: UploadFile,
@@ -466,10 +483,40 @@ async def websocket_subtitles(ws: WebSocket, job_id: str):
         await translate_cues(client, cues, source_lang, target_lang)
 
         # Phase 5: Generate VTT
-        await ws.send_json({"type": "progress", "percent": 90, "message": "Generating subtitles..."})
+        await ws.send_json({"type": "progress", "percent": 85, "message": "Generating subtitles..."})
         vtt_content = generate_vtt(cues)
 
-        await ws.send_json({"type": "complete", "vtt": vtt_content})
+        # Phase 6: Burn subtitles into video
+        await ws.send_json({"type": "progress", "percent": 90, "message": "Burning subtitles into video..."})
+        video_path = str(Path(job_dir) / "input_video")
+        vtt_path = str(Path(job_dir) / "subs.vtt")
+        output_path = str(Path(job_dir) / "output_video.mp4")
+        with open(vtt_path, "w") as f:
+            f.write(vtt_content)
+
+        burn_result = subprocess.run(
+            [
+                "ffmpeg", "-i", video_path,
+                "-vf", f"subtitles={vtt_path}",
+                "-c:a", "copy",
+                "-y", output_path,
+            ],
+            capture_output=True, text=True, timeout=600,
+        )
+
+        has_burned_video = burn_result.returncode == 0 and Path(output_path).exists()
+
+        # Store output path for download
+        if has_burned_video:
+            active_jobs[job_id]["output_video"] = output_path
+            # Don't cleanup yet — need files for download
+            active_jobs[job_id]["ready"] = True
+
+        await ws.send_json({
+            "type": "complete",
+            "vtt": vtt_content,
+            "has_video": has_burned_video,
+        })
 
     except Exception:
         try:
@@ -477,7 +524,9 @@ async def websocket_subtitles(ws: WebSocket, job_id: str):
         except Exception:
             pass
     finally:
-        cleanup_job(job_id)
+        # Only cleanup if no burned video to download
+        if not active_jobs.get(job_id, {}).get("ready"):
+            cleanup_job(job_id)
         try:
             await ws.close()
         except Exception:

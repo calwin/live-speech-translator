@@ -50,6 +50,7 @@ let selectedFile = null;
 let videoObjectUrl = null;
 let vttContent = null;
 let vttObjectUrl = null;
+let currentJobId = null;
 
 // Populate language dropdowns
 sourceSelect.add(new Option("Auto Detect", "unknown"));
@@ -156,6 +157,7 @@ async function startProcessing() {
         }
 
         const { job_id } = await response.json();
+        currentJobId = job_id;
         updateProgress(15, "Extracting audio...");
 
         // Connect WebSocket for progress
@@ -170,7 +172,7 @@ async function startProcessing() {
                     break;
                 case "complete":
                     updateProgress(100, "Subtitles ready!");
-                    showResult(data.vtt);
+                    showResult(data.vtt, data.has_video);
                     ws.close();
                     break;
                 case "error":
@@ -195,7 +197,7 @@ function updateProgress(percent, message) {
     progressStatus.textContent = message;
 }
 
-function showResult(vtt) {
+function showResult(vtt, hasVideo) {
     vttContent = vtt;
 
     // Clean up previous VTT URL
@@ -209,6 +211,9 @@ function showResult(vtt) {
     videoPlayer.src = videoObjectUrl;
     subtitleTrack.src = vttObjectUrl;
     subtitleTrack.srclang = targetSelect.value.split("-")[0];
+
+    // Show/hide video download button based on whether burn succeeded
+    downloadVideoBtn.style.display = hasVideo ? "" : "none";
 
     // Show video section
     videoSection.classList.remove("hidden");
@@ -235,12 +240,12 @@ function enableControls() {
     removeFileBtn.disabled = false;
 }
 
-// Download Video
+// Download Video (with burned-in subtitles)
 downloadVideoBtn.addEventListener("click", () => {
-    if (!videoObjectUrl || !selectedFile) return;
+    if (!currentJobId) return;
     const a = document.createElement("a");
-    a.href = videoObjectUrl;
-    a.download = selectedFile.name;
+    a.href = `/api/subtitles/download/${currentJobId}`;
+    a.download = selectedFile ? selectedFile.name.replace(/\.[^.]+$/, "_subtitled.mp4") : "subtitled_video.mp4";
     a.click();
 });
 
@@ -264,6 +269,7 @@ resetBtn.addEventListener("click", () => {
     selectedFile = null;
     fileInput.value = "";
     vttContent = null;
+    currentJobId = null;
 
     if (videoObjectUrl) {
         URL.revokeObjectURL(videoObjectUrl);
