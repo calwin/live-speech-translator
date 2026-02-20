@@ -4,3 +4,4 @@ sarvamai>=0.1.25
 python-dotenv>=1.0.0
 python-multipart>=0.0.6
 httpx>=0.25.0
+static-ffmpeg>=2.7

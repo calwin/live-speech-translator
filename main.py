@@ -13,8 +13,12 @@ from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
 from sarvamai import AsyncSarvamAI
 import httpx
+import static_ffmpeg
 
 load_dotenv()
+
+# Ensure ffmpeg binary is available (downloads static build if needed)
+static_ffmpeg.add_paths()
 
 app = FastAPI()
 API_KEY = os.getenv("SARVAM_API_KEY")
