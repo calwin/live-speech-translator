@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Subtitle Translator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/subtitles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+                    <line x1="7" y1="2" x2="7" y2="22"/>
+                    <line x1="17" y1="2" x2="17" y2="22"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <line x1="2" y1="7" x2="7" y2="7"/>
+                    <line x1="2" y1="17" x2="7" y2="17"/>
+                    <line x1="17" y1="7" x2="22" y2="7"/>
+                    <line x1="17" y1="17" x2="22" y2="17"/>
+                </svg>
+                <h1>Video Subtitle Translator</h1>
+            </div>
+            <p class="subtitle">Upload a video, get translated subtitles in 22+ Indian languages</p>
+            <p class="powered-by">Powered by <a href="https://www.sarvam.ai" target="_blank" rel="noopener noreferrer">Sarvam AI</a></p>
+            <a href="/" class="nav-link">&larr; Live Speech Translator</a>
+        </header>
+
+        <div class="card controls-card">
+            <div class="controls">
+                <div class="language-select">
+                    <label for="source-lang">Audio language (auto)</label>
+                    <select id="source-lang"></select>
+                </div>
+                <div class="arrow-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </div>
+                <div class="language-select">
+                    <label for="target-lang">Subtitle language</label>
+                    <select id="target-lang"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card upload-card" id="upload-section">
+            <div class="upload-zone" id="drop-zone">
+                <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p class="upload-text">Drag & drop a video file here</p>
+                <p class="upload-hint">or click to browse</p>
+                <input type="file" id="file-input" accept="video/*" hidden>
+            </div>
+            <div class="file-info hidden" id="file-info">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                </svg>
+                <span id="file-name"></span>
+                <span id="file-size"></span>
+                <button class="remove-file" id="remove-file" title="Remove file">&times;</button>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button class="generate-btn" id="generate-btn" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+                    <line x1="7" y1="2" x2="7" y2="22"/>
+                    <line x1="17" y1="2" x2="17" y2="22"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                </svg>
+                Generate Subtitles
+            </button>
+        </div>
+
+        <div class="card progress-card hidden" id="progress-section">
+            <div class="progress-status" id="progress-status">Uploading video...</div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="progress-percent" id="progress-percent">0%</div>
+        </div>
+
+        <div class="video-section hidden" id="video-section">
+            <div class="card video-card">
+                <div class="video-container">
+                    <video id="video-player" controls crossorigin="anonymous">
+                        <track id="subtitle-track" kind="subtitles" label="Translated" default>
+                    </video>
+                </div>
+                <div class="video-actions">
+                    <button class="download-btn" id="download-vtt">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download .vtt
+                    </button>
+                    <button class="reset-btn" id="reset-btn">
+                        New Video
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span>Powered by</span>
+            <a href="https://www.sarvam.ai" target="_blank" rel="noopener noreferrer">Sarvam AI</a>
+        </footer>
+    </div>
+
+    <script src="/static/subtitles.js"></script>
+</body>
+</html>
