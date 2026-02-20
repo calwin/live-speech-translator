@@ -41,6 +41,7 @@ const progressPercent = document.getElementById("progress-percent");
 const videoSection = document.getElementById("video-section");
 const videoPlayer = document.getElementById("video-player");
 const subtitleTrack = document.getElementById("subtitle-track");
+const downloadVideoBtn = document.getElementById("download-video");
 const downloadBtn = document.getElementById("download-vtt");
 const resetBtn = document.getElementById("reset-btn");
 
@@ -233,6 +234,15 @@ function enableControls() {
     targetSelect.disabled = false;
     removeFileBtn.disabled = false;
 }
+
+// Download Video
+downloadVideoBtn.addEventListener("click", () => {
+    if (!videoObjectUrl || !selectedFile) return;
+    const a = document.createElement("a");
+    a.href = videoObjectUrl;
+    a.download = selectedFile.name;
+    a.click();
+});
 
 // Download VTT
 downloadBtn.addEventListener("click", () => {
